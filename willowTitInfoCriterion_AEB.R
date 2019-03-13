@@ -125,12 +125,10 @@ p.int=c(fit.int[[1]][,"p"], fit.int[[2]][,"p"], fit.int[[3]][,"p"])
 mu.int = rbind(fit.int[[1]][,3:202], fit.int[[2]][,3:202], fit.int[[3]][,3:202])
 # mean across iterations
 mean.mu.int = apply(mu.int, 2, mean)
-# get posterior preditctive distribution
 ppd.int <- matrix(NA, nrow = (n.iter - n.burnin)*3, ncol = length(y))
 for(i in 1:((n.iter - n.burnin)*3)) {
   ppd.int[i, ] <- dmix(y,J, mean(p.int), pnorm(mu.int[i, ])) # probit link
 }
-# get log posterior predictive distribution
 lppd.int= log(ppd.int)
 # compute deviance evaluated at the posterior mean
 D.hat.int=-2*sum(log(dmix(y,J,mean(p.int), pnorm(mean.mu.int))))
@@ -191,8 +189,8 @@ tmp.sum=-2*sum(tmp.log)
 pD.1.int=2*sum(tmp.log-apply(lppd.int,2,mean)) # eqn 43
 pD.2.int=sum(apply(lppd.int,2,var)) # eq 44
 WAIC.1.int=tmp.sum+2*pD.1.int
-WAIC.2.int=tmp.sum+2*pD.2.int
- # this one preferredc(pD.1.int, WAIC.1.int)
+WAIC.2.int=tmp.sum+2*pD.2.int # this one preferred
+c(pD.1.int, WAIC.1.int)
 c(pD.2.int, WAIC.2.int)
 # elev
 tmp.log=log(apply(ppd.elev,2,mean))
@@ -223,25 +221,24 @@ c(pD.1.full, WAIC.1.full)
 c(pD.2.full, WAIC.2.full)
 
 ############ COMPUTE D ###########
-n <- 200
-# null
+n <- 2200# null
 pz.chain1.int = fit.int[[1]][,403:602] * fit.int[[1]][,"p"]
 pz.chain2.int =  fit.int[[2]][,403:602] * fit.int[[2]][,"p"]
 pz.chain3.int =  fit.int[[3]][,403:602] * fit.int[[3]][,"p"]
 pz.int = rbind(pz.chain1.int, pz.chain2.int, pz.chain3.int)
-y# some simulated ys
-.int = matrix(NA, nrow = (n.iter - n.burnin) * 3, ncol = n)
+# some simulated ys
+y.int = matrix(NA, nrow = (n.iter - n.burnin) * 3, ncol = n)
 for (i in 1:((n.iter - n.burnin) * 3)) {
   y.int[i,] <- rbinom(n,J,pz.int[i, ])
 }
-p# means
-z.mean.int = apply(pz.int,2,mean)
+# means
+pz.mean.int = apply(pz.int,2,mean)
 y.mean.int = apply(y.int,2,mean)
-sum.1=sum((y-y.mean.int)^2)
- # sum of (data - simulated)^2y.var.int=apply(y.int,2,var)
- # var of simulatedsum.2=sum(y.var.int)
- # sum of varsD.int=sum.1+sum.2
- # eqn 49D.int
+sum.1=sum((y-y.mean.int)^2) # sum of (data - simulated)^2
+y.var.int=apply(y.int,2,var) # var of simulated
+sum.2=sum(y.var.int) # sum of vars
+D.int=sum.1+sum.2 # eqn 49
+D.int
 # elev
 pz.chain1.elev = fit.elev[[1]][,404:603] * fit.elev[[1]][,"p"]
 pz.chain2.elev =  fit.elev[[2]][,404:603] * fit.elev[[2]][,"p"]
