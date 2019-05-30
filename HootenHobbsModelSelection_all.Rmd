@@ -1,6 +1,6 @@
 
-
 #### ReadMe ####
+
 In Fall Quarter 2018, the Converse-Gardner labs coded up parts of the Hooten and Hobbs 2015 model selection paper. This is the compilation of those efforts (one code chunk per method), with the original code.
 
 Model selection methods include: 
@@ -9,6 +9,7 @@ Model selection methods include:
 - Bayes factors (?)
 - CPO
 - Shrinkage and priors
+
 
 ```{r set-up}
 
